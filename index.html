@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Turn your scroll time into brain time. Bite-sized ideas from the world's best books, with spaced repetition built in." />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>Synapse - Built to guide you off the screen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Spectral:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#7b2ff7" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Synapse" />
+  <!-- <link rel="apple-touch-icon" href="icons/icon-192.png" /> -->
+</head>
+<body>
+  <!-- ============ SIDEBAR (app chrome) ============ -->
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" id="brandLink" href="#/" data-link>
+      <svg class="brand-mark" width="30" height="30" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="brandMarkCore" x1="13" y1="13" x2="21" y2="21" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#B79AE0" />
+            <stop offset="100%" stop-color="#8B5FBF" />
+          </linearGradient>
+          <radialGradient id="brandMarkGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#8B5FBF" stop-opacity="0.55" />
+            <stop offset="100%" stop-color="#8B5FBF" stop-opacity="0" />
+          </radialGradient>
+        </defs>
+        <circle cx="20" cy="20" r="19" fill="url(#brandMarkGlow)" />
+        <path d="M17,1 A16,16 0 0 1 33,17 A16,16 0 0 1 17,33 A16,16 0 0 1 1,17 L1,1 Z" stroke="#241849" stroke-width="2" />
+        <path d="M17,7 A10,10 0 0 1 27,17 A10,10 0 0 1 17,27 A10,10 0 0 1 7,17 L7,7 Z" stroke="#3D2B6B" stroke-width="2" />
+        <path d="M17,13 A4,4 0 0 1 21,17 A4,4 0 0 1 17,21 A4,4 0 0 1 13,17 L13,13 Z" fill="url(#brandMarkCore)" />
+        <rect x="28.7" y="1.7" width="4.5" height="4.5" fill="#B8923C" transform="rotate(45 31 4)" />
+      </svg>
+      <span class="brand-name">Synapse</span>
+    </a>
+
+    <nav class="nav">
+      <a class="nav-item" href="#/home" data-link data-route="home">
+        <span class="nav-ico">🏠</span><span>Feed</span>
+      </a>
+      <a class="nav-item" href="#/explore" data-link data-route="explore">
+        <span class="nav-ico">🧭</span><span>Explore</span>
+      </a>
+      <a class="nav-item" href="#/saved" data-link data-route="saved">
+        <span class="nav-ico">🔖</span><span>Saved</span>
+        <span class="nav-badge" id="savedCount">0</span>
+      </a>
+      <a class="nav-item" href="#/topics" data-link data-route="topics">
+        <span class="nav-ico">📚</span><span>Library</span>
+      </a>
+      <a class="nav-item" href="#/" data-link data-route="landing">
+        <span class="nav-ico">✦</span><span>Discover</span>
+      </a>
+    </nav>
+
+    <div class="side-card">
+      <div class="streak">
+        <div class="streak-flame">🔥</div>
+        <div>
+          <div class="streak-num" id="streakNum">7</div>
+          <div class="streak-label">day streak</div>
+        </div>
+      </div>
+
+      <div class="stamina">
+        <div class="progress-head">
+          <span>Focus stamina</span>
+          <span id="staminaMin">0 / 15 min</span>
+        </div>
+        <div class="stamina-bar"><div class="stamina-fill" id="staminaFill"></div></div>
+      </div>
+
+      <div class="rewire" id="rewireBadge">
+        <div class="rewire-ico" id="rewireIco">🌫️</div>
+        <div class="rewire-meta">
+          <div class="rewire-level" id="rewireLevel">Lv 1 · Passive Swiper</div>
+          <div class="rewire-next" id="rewireNext">3 min to Curious Skimmer</div>
+        </div>
+      </div>
+
+      <div class="due-row" id="dueRow">
+        <span class="due-ico">🗓</span>
+        <div>
+          <div class="due-num" id="dueNum">0</div>
+          <div class="streak-label" id="dueLabel">cards to review</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+      <span id="themeIco">🌙</span><span id="themeLabel">Dark mode</span>
+    </button>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+      <div class="search">
+        <span class="search-ico">🔎</span>
+        <input id="searchInput" type="search" placeholder="Search ideas, books, topics…" autocomplete="off" />
+      </div>
+      <div class="topbar-actions">
+        <button class="pro-pill" id="proPill" title="Upgrade">✨ Read like a Pro</button>
+        <button class="pill-btn" id="createBtn">✎ Write in Studio</button>
+
+        <div class="bell-wrap">
+          <button class="icon-btn bell-btn" id="bellBtn" aria-label="Notifications">
+            🔔<span class="bell-badge" id="bellBadge" hidden>0</span>
+          </button>
+          <div class="dropdown-panel notif-panel" id="notifPanel" hidden>
+            <div class="dropdown-head">Notifications</div>
+            <div class="notif-list" id="notifList"></div>
+          </div>
+        </div>
+
+        <div class="avatar-wrap">
+          <button class="avatar" id="avatarBtn" title="Your profile">YA</button>
+          <div class="dropdown-panel profile-panel" id="profilePanel" hidden>
+            <div class="profile-panel-head">
+              <div class="avatar" id="ppAvatar">YA</div>
+              <div>
+                <div class="pp-name" id="ppName">Your name</div>
+                <div class="pp-email" id="ppEmail"></div>
+              </div>
+            </div>
+            <button class="pp-item" id="ppProfile"><span>👤</span>View Profile</button>
+            <button class="pp-item" id="ppTheme"><span id="ppThemeIco">🌙</span><span id="ppThemeLabel">Dark mode</span></button>
+            <button class="pp-item" id="ppSettings"><span>⚙️</span>Settings</button>
+            <button class="pp-item" id="ppHelp"><span>❔</span>Help Center</button>
+            <div class="pp-sep"></div>
+            <button class="pp-item pp-danger" id="ppSignOut"><span>🚪</span>Sign Out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="content" id="view"><!-- rendered by app.js --></div>
+  </main>
+
+  <!-- ============ BOTTOM NAV (mobile app chrome) ============ -->
+  <nav class="bottomnav">
+    <a class="bn-item" href="#/home" data-link data-route="home"><span>🏠</span><small>Feed</small></a>
+    <a class="bn-item" href="#/explore" data-link data-route="explore"><span>🧭</span><small>Explore</small></a>
+    <a class="bn-item bn-create" href="#/home" data-link id="bnCreate"><span>＋</span></a>
+    <a class="bn-item" href="#/saved" data-link data-route="saved"><span>🔖</span><small>Saved</small></a>
+    <a class="bn-item" href="#/topics" data-link data-route="topics"><span>📚</span><small>Library</small></a>
+  </nav>
+
+  <!-- ============ TOAST ============ -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ============ CREATOR STUDIO ============ -->
+  <div class="modal-backdrop" id="studioBackdrop" hidden>
+    <div class="modal studio-modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h3>Studio</h3>
+        <button class="icon-btn" id="studioClose" aria-label="Close">✕</button>
+      </div>
+
+      <div class="studio-tabs" id="studioTabs">
+        <button class="studio-tab active" data-type="post">📝 New Post</button>
+        <button class="studio-tab" data-type="book">📘 Book</button>
+        <button class="studio-tab" data-type="link">🔗 Web Link</button>
+        <button class="studio-tab" data-type="media">🎬 YouTube / Podcast</button>
+        <button class="studio-tab" data-type="ingest">📚 Ingest PDF (AI)</button>
+      </div>
+
+      <div id="studioForm"></div>
+
+      <div class="modal-foot">
+        <span class="studio-savestate" id="studioSaveState"></span>
+        <button class="ghost-btn" id="studioCancel">Close</button>
+        <button class="pill-btn" id="studioPublish">Publish</button>
+      </div>
+
+      <div class="studio-drafts" id="studioDrafts">
+        <h4>Your Drafts</h4>
+        <div class="drafts-list" id="draftsList"></div>
+      </div>
+
+      <!-- ============ PDF INGESTION PROCESSING OVERLAY ============ -->
+      <div class="ingest-loader" id="ingestLoader" hidden>
+        <div class="ingest-loader-inner">
+          <div class="ingest-spinner" aria-hidden="true"></div>
+          <h3 class="ingest-loader-title">Ingesting your book…</h3>
+          <ol class="ingest-steps" id="ingestSteps">
+            <li class="ingest-step active" data-step="0"><span class="ingest-step-ico">📄</span><span>Extracting chapter chunks &amp; text…</span></li>
+            <li class="ingest-step" data-step="1"><span class="ingest-step-ico">🧠</span><span>Claude AI synthesizing mental models…</span></li>
+            <li class="ingest-step" data-step="2"><span class="ingest-step-ico">🎛️</span><span>Structuring 60% Core, 20% Sandboxes, 20% Diagrams…</span></li>
+            <li class="ingest-step" data-step="3"><span class="ingest-step-ico">💾</span><span>Indexing cards into database…</span></li>
+          </ol>
+          <button class="ghost-btn ingest-cancel" id="ingestCancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SETTINGS MODAL ============ -->
+  <div class="modal-backdrop" id="settingsBackdrop" hidden>
+    <div class="modal settings-modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h3>Settings</h3>
+        <button class="icon-btn" id="settingsClose" aria-label="Close">✕</button>
+      </div>
+      <div class="studio-tabs" id="settingsTabs">
+        <button class="studio-tab active" data-tab="personal">Personal</button>
+        <button class="studio-tab" data-tab="preferences">Preferences</button>
+        <button class="studio-tab" data-tab="email">Email</button>
+        <button class="studio-tab" data-tab="export">Export</button>
+      </div>
+      <div id="settingsBody"></div>
+    </div>
+  </div>
+
+  <!-- ============ FOLLOW / FOLLOWERS MODAL ============ -->
+  <div class="modal-backdrop" id="followBackdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h3>Connections</h3>
+        <button class="icon-btn" id="followClose" aria-label="Close">✕</button>
+      </div>
+      <div class="studio-tabs" id="followTabs">
+        <button class="studio-tab active" data-ftab="following">Following</button>
+        <button class="studio-tab" data-ftab="followers">Followers</button>
+      </div>
+      <div class="follow-list" id="followList"></div>
+    </div>
+  </div>
+
+  <!-- ============ HELP CENTER DRAWER ============ -->
+  <div class="modal-backdrop" id="helpBackdrop" hidden>
+    <div class="modal help-modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h3>Help Center</h3>
+        <button class="icon-btn" id="helpClose" aria-label="Close">✕</button>
+      </div>
+      <div class="help-faq" id="helpFaq"></div>
+      <div class="help-contact">Still stuck? <a href="">Email support</a></div>
+    </div>
+  </div>
+
+  <!-- ============ FULLSCREEN FLASHCARD READER ============ -->
+  <div class="reader" id="reader" hidden role="dialog" aria-modal="true" aria-label="Flashcard reader">
+    <div class="reader-bar">
+      <div class="reader-crumb" id="readerCrumb"></div>
+      <div class="reader-nav">
+        <button class="reader-ico" id="readerPrev" aria-label="Previous idea">‹</button>
+        <span class="reader-count" id="readerCount">1 / 6</span>
+        <button class="reader-ico" id="readerNext" aria-label="Next idea">›</button>
+        <button class="reader-ico close" id="readerClose" aria-label="Close reader">✕</button>
+      </div>
+    </div>
+    <div class="reader-scroll">
+      <article class="reader-card" id="readerCard"><!-- rendered by app.js --></article>
+    </div>
+    <div class="reader-foot">
+      <div class="reader-foot-label" id="readerSchedule">How well did you recall this?</div>
+      <div class="reader-grades" id="readerGrades"><!-- SM-2 buttons --></div>
+    </div>
+  </div>
+
+  <!-- ============ FOCUS EXIT (strategic intentional friction) ============ -->
+  <div class="focus-exit" id="focusExit" hidden>
+    <div class="fx-inner" id="fxMain">
+      <div class="fx-ring"><span>100%</span></div>
+      <h2>Focus Stamina is at 100%</h2>
+      <p>You just did 15 minutes of real deep focus. The best next rep isn't another card - it's the actual book.</p>
+      <div class="fx-rec">
+        <div class="fx-rec-label">Go read</div>
+        <div class="fx-rec-book" id="fxBook">Atomic Habits</div>
+        <div class="fx-rec-loc" id="fxLoc">Chapter 3 · Page 40</div>
+      </div>
+      <button class="fx-close" id="fxClose">Close the feed &amp; go read</button>
+      <button class="fx-continue" id="fxContinue">
+        <span class="fx-hold"></span>
+        <span class="fx-continue-label">Hold to continue anyway</span>
+      </button>
+      <div class="fx-note">Intentional friction - press and hold for 3 seconds. This also resets your stamina.</div>
+    </div>
+
+    <div class="fx-inner fx-bye" id="fxBye" hidden>
+      <div class="fx-ring big"><span>📖</span></div>
+      <h2>Go read.</h2>
+      <p>Close this tab and open <strong id="fxByeBook">the book</strong>. Your brain will thank you tomorrow. The feed will still be here.</p>
+      <button class="fx-close ghost" id="fxReopen">I'm back - reopen the feed</button>
+    </div>
+  </div>
+
+  <!-- ============ STICKY GUEST / FREEMIUM CTA BAR ============ -->
+  <div class="sticky-cta" id="stickyCta" hidden>
+    <div class="sticky-cta-inner">
+      <span class="sticky-cta-msg" id="stickyCtaMsg">Unlock the full library - 25 books, unlimited ideas</span>
+      <div class="sticky-cta-actions">
+        <a class="btn-secondary sticky-btn" id="stickySignIn" href="#/onboarding?mode=signin" data-link>Sign In</a>
+        <a class="btn-primary sticky-btn" id="stickyGetStarted" href="#/onboarding" data-link>Get Started</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ACCESS GATE MODAL (content gating barrier) ============ -->
+  <div class="access-gate" id="accessGate" hidden role="dialog" aria-modal="true">
+    <div class="access-gate-backdrop" id="gateBackdrop"></div>
+    <div class="access-gate-card">
+      <button class="icon-btn gate-x" id="gateDismiss" aria-label="Dismiss">✕</button>
+      <div class="gate-lock">🔒</div>
+      <h3 id="gateTitle">Unlock the full library</h3>
+      <p id="gateBody">Create a free account to keep going.</p>
+      <button class="btn-primary wiz-full" id="gatePrimary">Get Started</button>
+    </div>
+  </div>
+
+  <!-- ============ FLOATING AUDIO BAR ============ -->
+  <div class="audio-bar" id="audioBar" hidden>
+    <div class="audio-bar-inner">
+      <div class="audio-thumb" id="audioThumb">🎧</div>
+      <div class="audio-info">
+        <div class="audio-title" id="audioTitle">Loading…</div>
+        <div class="audio-source" id="audioSource"></div>
+      </div>
+      <div class="audio-waveform" id="audioWaveform" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div class="audio-controls">
+        <button class="audio-btn" id="audioSkipBack" title="Back 10s">⏮ 10</button>
+        <button class="audio-btn audio-play" id="audioPlay" title="Play / Pause">▶</button>
+        <button class="audio-btn" id="audioSkipFwd" title="Forward 10s">10 ⏭</button>
+        <button class="audio-btn audio-speed" id="audioSpeed" title="Playback speed">1×</button>
+      </div>
+      <button class="audio-btn audio-close" id="audioClose" title="Close audio bar">✕</button>
+    </div>
+    <div class="audio-progress-wrap">
+      <div class="audio-progress-track">
+        <div class="audio-progress-fill" id="audioProgressFill"></div>
+      </div>
+      <span class="audio-time" id="audioTime">0:00</span>
+    </div>
+  </div>
+
+  <!-- ============ DISCUSSION DRAWER ============ -->
+  <div class="discussion-overlay" id="discussionOverlay" hidden></div>
+  <aside class="discussion-drawer" id="discussionDrawer" hidden aria-label="Discussion">
+    <div class="discussion-drag-handle" id="discussionDrag" aria-hidden="true"></div>
+    <div class="discussion-header">
+      <div class="discussion-title" id="discussionTitle">Discussion</div>
+      <button class="icon-btn" id="discussionClose" aria-label="Close discussion">✕</button>
+    </div>
+    <div class="discussion-body" id="discussionBody">
+      <!-- comment threads rendered by app.js -->
+    </div>
+    <div class="discussion-input-bar">
+      <div class="avatar discussion-me-avatar" id="discussionMeAvatar">?</div>
+      <input class="discussion-input" id="discussionInput" type="text"
+             placeholder="Add a comment…" maxlength="500" autocomplete="off" />
+      <button class="audio-btn discussion-send" id="discussionSend" aria-label="Send">➤</button>
+    </div>
+  </aside>
+
+  <!-- ============ STASH POPOVER (Save to Stash checklist) ============ -->
+  <div class="stash-popover" id="stashPopover" hidden role="dialog" aria-modal="true" aria-label="Save to Stash">
+    <div class="stash-popover-head">
+      <span class="stash-popover-title">Save to Stash</span>
+      <button class="icon-btn" id="stashPopoverClose" aria-label="Close">✕</button>
+    </div>
+    <div class="stash-list" id="stashList">
+      <!-- stash checkboxes rendered by app.js -->
+    </div>
+    <button class="stash-create-trigger" id="stashCreateTrigger">＋ New stash</button>
+  </div>
+
+  <!-- ============ CREATE NEW STASH MODAL ============ -->
+  <div class="modal-backdrop" id="stashCreateBackdrop" hidden>
+    <div class="modal stash-create-modal" role="dialog" aria-modal="true" aria-label="Create New Stash">
+      <div class="modal-head">
+        <h3>New Stash</h3>
+        <button class="icon-btn" id="stashCreateClose" aria-label="Close">✕</button>
+      </div>
+      <div class="stash-create-body">
+        <label class="field-label">Emoji icon
+          <div class="emoji-picker-row" id="emojiPickerRow">
+            <button class="emoji-opt active" data-emoji="📚">📚</button>
+            <button class="emoji-opt" data-emoji="⭐">⭐</button>
+            <button class="emoji-opt" data-emoji="🔥">🔥</button>
+            <button class="emoji-opt" data-emoji="💡">💡</button>
+            <button class="emoji-opt" data-emoji="🎯">🎯</button>
+            <button class="emoji-opt" data-emoji="🧠">🧠</button>
+            <button class="emoji-opt" data-emoji="🌱">🌱</button>
+            <button class="emoji-opt" data-emoji="🏛">🏛</button>
+            <button class="emoji-opt" data-emoji="💸">💸</button>
+            <button class="emoji-opt" data-emoji="☀️">☀️</button>
+          </div>
+        </label>
+        <label class="field-label">Colour
+          <div class="gradient-palette" id="gradientPalette">
+            <button class="grad-swatch active" data-color="#7b2ff7" style="background:#7b2ff7" title="Purple"></button>
+            <button class="grad-swatch" data-color="#fd9644" style="background:#fd9644" title="Orange"></button>
+            <button class="grad-swatch" data-color="#00b894" style="background:#00b894" title="Teal"></button>
+            <button class="grad-swatch" data-color="#0984e3" style="background:#0984e3" title="Blue"></button>
+            <button class="grad-swatch" data-color="#ff3d7f" style="background:#ff3d7f" title="Pink"></button>
+            <button class="grad-swatch" data-color="#fdcb6e" style="background:#fdcb6e" title="Yellow"></button>
+            <button class="grad-swatch" data-color="#2f3640" style="background:#2f3640" title="Slate"></button>
+            <button class="grad-swatch" data-color="#6c5ce7" style="background:#6c5ce7" title="Indigo"></button>
+          </div>
+        </label>
+        <label class="field-label">Title
+          <input class="field-input" id="stashTitleInput" type="text" placeholder="e.g. Morning Brain Priming" maxlength="60" />
+        </label>
+        <label class="field-label">Description <span class="field-optional">(optional)</span>
+          <textarea class="field-input" id="stashDescInput" rows="2" placeholder="What ideas belong here?" maxlength="200"></textarea>
+        </label>
+      </div>
+      <div class="modal-foot">
+        <button class="ghost-btn" id="stashCreateCancel">Cancel</button>
+        <button class="pill-btn" id="stashCreateSave">Create Stash</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SHARE CANVAS MODAL ============ -->
+  <div class="modal-backdrop" id="shareBackdrop" hidden>
+    <div class="modal share-modal" role="dialog" aria-modal="true" aria-label="Share Card">
+      <div class="modal-head">
+        <h3>Share</h3>
+        <button class="icon-btn" id="shareClose" aria-label="Close share">✕</button>
+      </div>
+      <div class="share-themes" id="shareThemes">
+        <button class="share-theme-pill active" data-theme="midnight">🌑 Midnight</button>
+        <button class="share-theme-pill" data-theme="parchment">📜 Parchment</button>
+        <button class="share-theme-pill" data-theme="aurora">🌈 Aurora</button>
+        <button class="share-theme-pill" data-theme="carbon">🖤 Carbon</button>
+      </div>
+      <div class="share-previews">
+        <div class="share-preview-wrap ratio-1-1">
+          <div class="share-canvas" id="shareCanvas11" data-ratio="1:1"><!-- rendered by app.js --></div>
+          <span class="share-ratio-label">1 : 1</span>
+        </div>
+        <div class="share-preview-wrap ratio-9-16">
+          <div class="share-canvas" id="shareCanvas916" data-ratio="9:16"><!-- rendered by app.js --></div>
+          <span class="share-ratio-label">9 : 16</span>
+        </div>
+      </div>
+      <div class="share-actions">
+        <button class="ghost-btn share-action-btn" id="shareDownload">⬇ Download</button>
+        <button class="ghost-btn share-action-btn" id="shareCopy">⎘ Copy image</button>
+        <button class="pill-btn share-action-btn" id="shareNative">🔗 Share</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="scrim" id="scrim" hidden></div>
+
+  <script src="data.js"></script>
+  <script src="db.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js", { scope: "./" })
+          .then(reg => {
+            reg.addEventListener("updatefound", () => {
+              const nw = reg.installing;
+              if (!nw) return;
+              nw.addEventListener("statechange", () => {
+                if (nw.state === "installed" && navigator.serviceWorker.controller) {
+                  // New version available - post a message so app.js can show a toast
+                  document.dispatchEvent(new CustomEvent("sw:update-available"));
+                }
+              });
+            });
+          })
+          .catch(err => console.warn("SW registration failed:", err));
+      });
+    }
+  </script>
+</body>
+</html>

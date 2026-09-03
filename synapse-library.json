@@ -1,0 +1,33 @@
+[
+  {
+    "id": "u1788182098046",
+    "kind": "core",
+    "topic": "Personal Development",
+    "coverColor": "#6c5ce7",
+    "likes": 0,
+    "saves": 0,
+    "source": "My notes",
+    "type": "Post",
+    "author": "You",
+    "cover": "✍",
+    "title": "The 2-minute rule works",
+    "body": "Scale any habit down until it takes under two minutes to start.",
+    "cliffhanger": "You wrote this one - the payoff is whatever future-you needs to hear.",
+    "unlock": "Nicely done. Revisit it tomorrow and see if it still rings true."
+  },
+  {
+    "id": "u1788182116744",
+    "kind": "core",
+    "topic": "Personal Development",
+    "coverColor": "#6c5ce7",
+    "likes": 0,
+    "saves": 0,
+    "source": "example.com",
+    "type": "Link",
+    "author": "",
+    "cover": "🔗",
+    "title": "Why deep work matters",
+    "body": "Distraction is a habit you can unlearn.",
+    "cliffhanger": "Read the source: https://www.example.com/great-article"
+  }
+]

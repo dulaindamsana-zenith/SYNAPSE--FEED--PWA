@@ -1,0 +1,18 @@
+{
+  "name": "Synapse - The only feed built to guide you off the screen",
+  "short_name": "Synapse",
+  "description": "Turn your scroll time into brain time. Bite-sized ideas from the world's best books, with spaced repetition built in.",
+  "start_url": "./index.html#/home",
+  "id": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f0c1a",
+  "theme_color": "#7b2ff7",
+  "lang": "en",
+  "categories": ["education", "books", "productivity"],
+  "scope": "./",
+  "icons": [],
+  "shortcuts": [],
+  "prefer_related_applications": false,
+  "related_applications": []
+}
