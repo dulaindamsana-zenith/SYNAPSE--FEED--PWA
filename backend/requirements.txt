@@ -1,14 +1,35 @@
-fastapi
-uvicorn[standard]
-sqlalchemy
-pydantic
-pydantic-settings
-email-validator
-python-dotenv
-httpx
-aiohttp
-google-genai
-PyMuPDF
-python-jose[cryptography]
-passlib[bcrypt]
-python-multipart
+# ---- Web framework ----
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+python-multipart>=0.0.12          # multipart/form-data (PDF upload)
+
+# ---- Data / ORM ----
+SQLAlchemy>=2.0.36
+pydantic>=2.9.0
+pydantic-settings>=2.6.0
+email-validator>=2.2.0            # pydantic EmailStr
+
+# ---- Auth ----
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+# passlib 1.7.4 reads bcrypt.__about__, removed in bcrypt 4.1. Pin below it,
+# otherwise every hash logs a noisy (harmless) AttributeError traceback.
+bcrypt==4.0.1
+
+psycopg2-binary
+
+# ---- PDF extraction ----
+PyMuPDF>=1.24.0
+# Optional: OCR fallback for scanned/image-only pages needs the Tesseract
+# binary + language data installed at the OS level (apt install tesseract-ocr).
+# PyMuPDF calls it via page.get_textpage_ocr(); ingestion degrades gracefully
+# to "no text" for those pages when Tesseract is absent.
+
+# ---- LLM ----
+# Google Gen AI SDK. `google-genai` is the current unified SDK; the older
+# `google-generativeai` package is deprecated and has a different import path
+# (`google.generativeai` vs `google.genai`) - ai_ingestion.py targets this one.
+google-genai>=1.0.0
+
+# ---- Config ----
+python-dotenv>=1.0.0
