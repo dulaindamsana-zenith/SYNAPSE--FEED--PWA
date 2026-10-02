@@ -1,4 +1,4 @@
-# 🧠 Synapse Feed 
+no all# 🧠 Synapse Feed 
 
 > **Built to guide you off the screen.**
 > Synapse Feed is a zero-friction, responsive Progressive Web Application (PWA) designed to hijack doomscrolling habits directly in web browsers. 
@@ -63,32 +63,34 @@ Algorithmically varies card types to prevent cognitive habituation:
 ## Installation & Local Development
 
 ### 1. Clone the Repository
-\`\`\`bash
+```bash
 git clone https://github.com/dulaindamsana-zenith/SYNAPSE--FEED--PWA.git
 cd SYNAPSE--FEED--PWA
-\`\`\`
+```
 
 ### 2. Frontend Setup (React + Vite)
-\`\`\`bash
+```bash
 cd frontend
 npm install
 npm run dev
-\`\`\`
+```
+
 *The frontend will run on \`http://localhost:5173\`.*
 
 ### 3. Backend Setup (FastAPI)
-\`\`\`bash
+```bash
 cd backend
 python3 -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8001
-\`\`\`
+```
+
 *The API will be available at \`http://127.0.0.1:8001\`.*
 
 ### 4. Environment Variables
 Create a \`.env\` file in the root of your frontend and backend directories:
-\`\`\`env
+```env
 # Frontend (.env)
 VITE_API_BASE_URL=http://127.0.0.1:8001
 
@@ -96,7 +98,7 @@ VITE_API_BASE_URL=http://127.0.0.1:8001
 DATABASE_URL=your_supabase_postgresql_url
 SUPABASE_URL=your_supabase_url
 SUPABASE_KEY=your_supabase_anon_key
-\`\`\`
+```
 
 ---
 
