@@ -75,7 +75,7 @@ npm install
 npm run dev
 ```
 
-*The frontend will run on \http://localhost:5173\.*
+*The frontend will run on `http://localhost:5173`.*
 
 ### 3. Backend Setup (FastAPI)
 ```bash
@@ -86,7 +86,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload --port 8001
 ```
 
-*The API will be available at \`http://127.0.0.1:8001\`.*
+*The API will be available at `http://127.0.0.1:8001`.*
 
 ### 4. Environment Variables
 Create a \`.env\` file in the root of your frontend and backend directories:
